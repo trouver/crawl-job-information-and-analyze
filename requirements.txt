@@ -1,0 +1,9 @@
+requests
+beautifulsoup4
+pandas
+matplotlib
+pyecharts
+echarts-china-provinces-pypkg
+echarts-china-cities-pypkg
+echarts-china-counties-pypkg
+jieba
