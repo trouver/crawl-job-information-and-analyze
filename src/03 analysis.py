@@ -38,12 +38,12 @@ salary_des = salary_data.describe() # 工资基本数据，包括平均数、中
 cats = pd.cut(salary_data, 18, precision=2) # 分为 18 个区间
 salary_counts = pd.value_counts(cats).sort_index() # 统计每个区间的频率
 
-fig = plt.figure('工资分布统计详情', figsize=[16, 5])
+fig = plt.figure('薪资统计详情', figsize=[16, 5])
 plt.subplots_adjust(left=0.03, bottom=0.3, right=0.97, top=0.9, wspace=0.3)
 # 设置画图边框和子图间距
 
 ax1 = fig.add_subplot(141)
-plt.title('工资详情描述', fontproperties=font_zh)
+plt.title('薪资详情描述', fontproperties=font_zh)
 for i, v in enumerate(salary_des):
     plt.text(0.05, 1 - (i + 1) * 0.07,
              salary_des.index[i] + ': ' + str(round(v, 2)))
@@ -58,33 +58,33 @@ salary_counts_pie.plot.pie(autopct='%.2f%%', pctdistance=0.7, labeldistance=0.9,
                            textprops={'fontproperties': font_zh})
 # 自动求百分比，保留两位小数；百分比位置，默认 0.6；标签位置，默认 1.1；
 # 十二点钟方向开始，默认九点钟方向开始；顺时针方向画图，默认逆时针；饼图半径，默认 1；字体设置
-plt.title('工资分布饼图', fontproperties=font_zh)
+plt.title('不同薪资区间占比', fontproperties=font_zh)
 plt.ylabel('') # 设置空坐标轴标签
 
 ax3 = fig.add_subplot(122)
 salary_counts.plot.bar()
 for i, v in enumerate(salary_counts):
     plt.text(i, v, v, ha='center', va='bottom')
-plt.title('工资分布柱状图', fontproperties=font_zh)
-plt.xlabel('工资区间（千/月）', fontproperties=font_zh)
-plt.ylabel('数量', fontproperties=font_zh)
+plt.title('薪资分布情况柱状图', fontproperties=font_zh)
+plt.xlabel('薪资区间（千/月）', fontproperties=font_zh)
+plt.ylabel('职位数量', fontproperties=font_zh)
 
 # 地点分析
 loc_data = data['job_loc_area'][(data['job_loc_city'] == '成都')
                                 & data['job_loc_area'].notnull()]
 loc_counts = loc_data.value_counts()
 
-fig = plt.figure('区域分布详情', figsize=[16, 5])
+fig = plt.figure('工作区域分布统计详情', figsize=[16, 5])
 plt.subplots_adjust(left=0.05, bottom=0.2, right=0.99, top=0.9)
 
 ax1 = fig.add_subplot(131)
 loc_counts.plot.bar()
 for i, v in enumerate(loc_counts):
     plt.text(i, v, v, ha='center', va='bottom')
-plt.title('区域分布柱状图', fontproperties=font_zh)
+plt.title('区域分布情况柱状图', fontproperties=font_zh)
 plt.xticks(range(len(loc_counts)), loc_counts.index, fontproperties=font_zh)
-plt.xlabel('区域', fontproperties=font_zh)
-plt.ylabel('数量', fontproperties=font_zh)
+plt.xlabel('工作区域', fontproperties=font_zh)
+plt.ylabel('职位数量', fontproperties=font_zh)
 
 ax2 = fig.add_subplot(132)
 loc_counts_other = pd.Series({'其他区域': loc_counts[7:].sum()})
@@ -92,7 +92,7 @@ loc_counts_pie = loc_counts_other.append(loc_counts[-6::-1])[::-1]
 loc_counts_pie.plot.pie(autopct='%.2f%%', pctdistance=0.7, labeldistance=0.9,
                         startangle=90, counterclock=False, radius=1.2,
                         textprops={'fontproperties': font_zh})
-plt.title('区域分布饼图', fontproperties=font_zh)
+plt.title('不同区域职位数量占比', fontproperties=font_zh)
 plt.ylabel('')
 
 ax3 = fig.add_subplot(133)
@@ -135,7 +135,7 @@ plt.yticks([])
 ax2 = fig.add_subplot(162)
 exp_counts.plot.pie(autopct='%.2f%%', pctdistance=0.7, labeldistance=0.9,
                     startangle=90, counterclock=False, radius=1.2)
-plt.title('平均工作经验年限分布饼图', fontproperties=font_zh)
+plt.title('不同工作经验年限职位数占比', fontproperties=font_zh)
 plt.ylabel('')
 
 ax3 = fig.add_subplot(132)
@@ -144,7 +144,7 @@ for i, v in enumerate(exp_counts):
     plt.text(i, v, v, ha='center', va='bottom')
 plt.title('平均工作经验年限分布柱状图', fontproperties=font_zh)
 plt.xlabel('工作经验（年）', fontproperties=font_zh)
-plt.ylabel('数量', fontproperties=font_zh)
+plt.ylabel('职位数量', fontproperties=font_zh)
 
 ax4 = fig.add_subplot(133)
 avg_salary_by_exp = salary_data.groupby(exp_data).mean()
@@ -169,8 +169,8 @@ for i, v in enumerate(edu_counts):
     plt.text(i, v, v, ha='center', va='bottom')
 plt.title('学历要求柱状图', fontproperties=font_zh)
 plt.xticks(range(len(edu_counts)), edu_counts.index, fontproperties=font_zh)
-plt.xlabel('学历', fontproperties=font_zh)
-plt.ylabel('数量', fontproperties=font_zh)
+plt.xlabel('学历要求', fontproperties=font_zh)
+plt.ylabel('职位数量', fontproperties=font_zh)
 
 ax2 = fig.add_subplot(132)
 edu_counts.sort_values(ascending=False, inplace=True)
@@ -179,7 +179,7 @@ edu_counts_pie = edu_counts[:3].append(edu_counts_other)
 edu_counts_pie.plot.pie(autopct='%.2f%%', labeldistance=0.8, startangle=90,
                         counterclock=False, radius=1.2,
                         textprops={'fontproperties': font_zh})
-plt.title('学历要求饼图', fontproperties=font_zh)
+plt.title('不同学历要求职位数占比', fontproperties=font_zh)
 plt.ylabel('')
 
 ax3 = fig.add_subplot(133)
@@ -208,7 +208,7 @@ for i, v in enumerate(num_counts):
 plt.title('需求人数柱状图', fontproperties=font_zh)
 plt.xticks(range(len(num_counts)), num_counts.index, fontproperties=font_zh)
 plt.xlabel('需求人数', fontproperties=font_zh)
-plt.ylabel('数量', fontproperties=font_zh)
+plt.ylabel('职位数量', fontproperties=font_zh)
 
 ax2 = fig.add_subplot(122)
 num_counts_other = pd.Series({'更多': num_counts[5:].sum()})
@@ -216,7 +216,7 @@ num_counts_pie = num_counts_other.append(num_counts[-5::-1])[::-1]
 num_counts_pie.plot.pie(autopct='%.2f%%', pctdistance=0.9, labeldistance=0.7,
                         startangle=90, counterclock=False, radius=1.2,
                         textprops={'fontproperties': font_zh})
-plt.title('需求人数饼图', fontproperties=font_zh)
+plt.title('不同需求人数职位数量占比', fontproperties=font_zh)
 plt.ylabel('')
 
 # 其他需求分析
@@ -245,28 +245,19 @@ plt.ylabel('权重', fontproperties=font_zh)
 # 福利分析
 wel_data = data['welfare'][data['welfare'].notnull()]
 wel_data_text = ' '.join(wel_data).split(' ')
-wel_counts_all = pd.Series(wel_data_text).value_counts()
-wel_counts_other = pd.Series({'其他福利': wel_counts_all[14:].sum()})
-wel_counts = wel_counts_other.append(wel_counts_all[-100::-1])[::-1]
+wel_counts_all = pd.Series(wel_data_text).value_counts()[:14]
+wel_counts = round(wel_counts_all / len(wel_data), 2)
 
-fig = plt.figure('福利信息统计详情', figsize=[12, 5])
-plt.subplots_adjust(left=0.1, bottom=0.25, right=0.95, top=0.9, wspace=0.1)
+plt.figure('福利信息统计详情')
+plt.subplots_adjust(bottom=0.3)
 
-ax1 = fig.add_subplot(121)
 wel_counts.plot.bar()
 for i, v in enumerate(wel_counts):
     plt.text(i, v, v, ha='center', va='bottom')
-plt.title('福利信息统计柱状图', fontproperties=font_zh)
+plt.title('福利信息（前 14 项）统计柱状图', fontproperties=font_zh)
 plt.xticks(range(len(wel_counts)), wel_counts.index, fontproperties=font_zh)
 plt.xlabel('关键字', fontproperties=font_zh)
-plt.ylabel('数量', fontproperties=font_zh)
-
-ax2 = fig.add_subplot(122)
-wel_counts.plot.pie(autopct='%.2f%%', pctdistance=0.7, labeldistance=0.9,
-                    startangle=90, counterclock=False, radius=1.2,
-                    textprops={'fontproperties': font_zh})
-plt.title('福利信息统计饼图', fontproperties=font_zh)
-plt.ylabel('')
+plt.ylabel('提及率', fontproperties=font_zh)
 
 # 工作详情分析
 dtl_data = ''.join(data['job_detail'])
@@ -275,12 +266,12 @@ values = [x[1] for x in dtl_data_kw]
 indexs = [x[0] for x in dtl_data_kw]
 dtl_data_kw_wt = pd.Series(values, index=indexs)
 
-plt.figure('详细信息关键字统计详情')
+plt.figure('详细信息关键字统计详情',figsize=[9, 5])
 plt.subplots_adjust(left=0.1, bottom=0.25, right=0.95, top=0.95)
 
 dtl_data_kw_wt.plot.bar()
 for i, v in enumerate(dtl_data_kw_wt):
-    plt.text(i, v, round(v, 2), ha='center', va='bottom')
+    plt.text(i, v, round(v, 3), ha='center', va='bottom')
 plt.title('详细信息关键字统计（前 18 项）柱状图', fontproperties=font_zh)
 plt.xticks(range(len(dtl_data_kw_wt)), dtl_data_kw_wt.index,
            fontproperties=font_zh)
@@ -302,14 +293,14 @@ for i, v in enumerate(func_counts):
     plt.text(i, v, v, ha='center', va='bottom')
 plt.title('职能分类统计柱状图', fontproperties=font_zh)
 plt.xticks(range(len(func_counts)), func_counts.index, fontproperties=font_zh)
-plt.xlabel('分类', fontproperties=font_zh)
-plt.ylabel('数量', fontproperties=font_zh)
+plt.xlabel('职能分类', fontproperties=font_zh)
+plt.ylabel('职位数量', fontproperties=font_zh)
 
 ax2 = fig.add_subplot(122)
 func_counts.plot.pie(autopct='%.2f%%', pctdistance=0.7, labeldistance=0.9,
                      startangle=90, counterclock=False, radius=1.2,
                      textprops={'fontproperties': font_zh})
-plt.title('职能分类统计饼图', fontproperties=font_zh)
+plt.title('不同职能分类职位数量占比', fontproperties=font_zh)
 plt.ylabel('')
 
 # 分析平均工资、工作经验和学历的相关性
