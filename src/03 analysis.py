@@ -12,31 +12,33 @@ from pyecharts.globals import ChartType
 import os
 import jieba
 import jieba.analyse
+
 # from item_detail import all_data as id_ad
 
-font_path = '/System/Library/Fonts/PingFang.ttc' # 中文字体路径
+
+font_path = '/System/Library/Fonts/PingFang.ttc'  # 中文字体路径
 font_zh = FontProperties(fname=font_path)
 
 id_ad = pd.read_csv('./item_detail.csv', index_col=0)
 
 regex = re.compile('数据分析|data ?analysis|大数据|big ?data', flags=re.I)
 bool_arr = pd.Series(index=id_ad.index)
-  
+
 for item in id_ad.itertuples():
-# 按行遍历数据
+    # 按行遍历数据
     if regex.search(item.job_name):
-        bool_arr[item.Index] = True 
+        bool_arr[item.Index] = True
     else:
         bool_arr[item.Index] = False
-  
+
 data = id_ad[bool_arr]
 # 根据职位名称进行数据清洗
 
 # 工资分析
-salary_data = data['salary(k/m)'][data['salary(k/m)'] != 0] # 去除未标注工资项
-salary_des = salary_data.describe() # 工资基本数据，包括平均数、中位数等
-cats = pd.cut(salary_data, 18, precision=2) # 分为 18 个区间
-salary_counts = pd.value_counts(cats).sort_index() # 统计每个区间的频率
+salary_data = data['salary(k/m)'][data['salary(k/m)'] != 0]  # 去除未标注工资项
+salary_des = salary_data.describe()  # 工资基本数据，包括平均数、中位数等
+cats = pd.cut(salary_data, 18, precision=2)  # 分为 18 个区间
+salary_counts = pd.value_counts(cats).sort_index()  # 统计每个区间的频率
 
 fig = plt.figure('薪资统计详情', figsize=[16, 5])
 plt.subplots_adjust(left=0.03, bottom=0.3, right=0.97, top=0.9, wspace=0.3)
@@ -47,7 +49,7 @@ plt.title('薪资详情描述', fontproperties=font_zh)
 for i, v in enumerate(salary_des):
     plt.text(0.05, 1 - (i + 1) * 0.07,
              salary_des.index[i] + ': ' + str(round(v, 2)))
-plt.xticks([]) # 设置空坐标轴
+plt.xticks([])  # 设置空坐标轴
 plt.yticks([])
 
 ax2 = fig.add_subplot(142)
@@ -59,7 +61,7 @@ salary_counts_pie.plot.pie(autopct='%.2f%%', pctdistance=0.7, labeldistance=0.9,
 # 自动求百分比，保留两位小数；百分比位置，默认 0.6；标签位置，默认 1.1；
 # 十二点钟方向开始，默认九点钟方向开始；顺时针方向画图，默认逆时针；饼图半径，默认 1；字体设置
 plt.title('不同薪资区间占比', fontproperties=font_zh)
-plt.ylabel('') # 设置空坐标轴标签
+plt.ylabel('')  # 设置空坐标轴标签
 
 ax3 = fig.add_subplot(122)
 salary_counts.plot.bar()
@@ -96,8 +98,8 @@ plt.title('不同区域职位数量占比', fontproperties=font_zh)
 plt.ylabel('')
 
 ax3 = fig.add_subplot(133)
-avg_salary_by_loc = salary_data.groupby(loc_data).mean()\
-.sort_values(ascending=False)
+avg_salary_by_loc = salary_data.groupby(loc_data).mean() \
+    .sort_values(ascending=False)
 avg_salary_by_loc.plot.bar()
 for i, v in enumerate(avg_salary_by_loc):
     plt.text(i, v, round(v, 2), ha='center', va='bottom')
@@ -109,17 +111,17 @@ plt.ylabel('平均工资（千/年）', fontproperties=font_zh)
 
 loc_list = [[i, loc_counts[i]] for i in loc_counts.index]
 geo = Geo().add_schema(maptype='成都')
-geo.add('区域分布热度图', loc_list, type_=ChartType.HEATMAP) # 设置名称和数据
-geo.set_series_opts(label_opts=opts.LabelOpts(is_show=True)) # 设置标签是否可见
-geo.set_global_opts(visualmap_opts=opts.VisualMapOpts()) # 视觉映射配置
-geo.render('./loc_heatmap.html') # 保存为网页
+geo.add('区域分布热度图', loc_list, type_=ChartType.HEATMAP)  # 设置名称和数据
+geo.set_series_opts(label_opts=opts.LabelOpts(is_show=True))  # 设置标签是否可见
+geo.set_global_opts(visualmap_opts=opts.VisualMapOpts())  # 视觉映射配置
+geo.render('./loc_heatmap.html')  # 保存为网页
 os.system('"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"\
- ./loc_heatmap.html') # 打开网页
+ ./loc_heatmap.html')  # 打开网页
 
 # 工作经验分析
 exp_data = data['job_exp']
-exp_des = exp_data.describe() # 工作经验基本数据描述，包括平均数、中位数等
-exp_counts = exp_data.value_counts().sort_index() # 按实际值进行频率统计
+exp_des = exp_data.describe()  # 工作经验基本数据描述，包括平均数、中位数等
+exp_counts = exp_data.value_counts().sort_index()  # 按实际值进行频率统计
 
 fig = plt.figure('平均工作经验统计详情', figsize=[16, 5])
 plt.subplots_adjust(left=0.03, bottom=0.15, right=0.97, top=0.9, wspace=0.25)
@@ -183,8 +185,8 @@ plt.title('不同学历要求职位数占比', fontproperties=font_zh)
 plt.ylabel('')
 
 ax3 = fig.add_subplot(133)
-avg_salary_by_edu = salary_data.groupby(edu_data).mean()\
-.reindex(edu_list, fill_value=0)
+avg_salary_by_edu = salary_data.groupby(edu_data).mean() \
+    .reindex(edu_list, fill_value=0)
 avg_salary_by_edu.plot.bar()
 for i, v in enumerate(avg_salary_by_edu):
     plt.text(i, v, round(v, 2), ha='center', va='bottom')
@@ -223,7 +225,7 @@ plt.ylabel('')
 other_data = data['other_req'][data['other_req'].notnull()]
 other_data_text = ' '.join(other_data)
 
-jieba.analyse.set_stop_words('./stopwords.txt') # 不提取的关键词
+jieba.analyse.set_stop_words('./stopwords.txt')  # 不提取的关键词
 other_data_kw = jieba.analyse.extract_tags(other_data_text, topK=10,
                                            withWeight=True)
 values = [x[1] for x in other_data_kw]
@@ -266,7 +268,7 @@ values = [x[1] for x in dtl_data_kw]
 indexs = [x[0] for x in dtl_data_kw]
 dtl_data_kw_wt = pd.Series(values, index=indexs)
 
-plt.figure('详细信息关键字统计详情',figsize=[9, 5])
+plt.figure('详细信息关键字统计详情', figsize=[9, 5])
 plt.subplots_adjust(left=0.1, bottom=0.25, right=0.95, top=0.95)
 
 dtl_data_kw_wt.plot.bar()
@@ -322,14 +324,14 @@ plt.ylabel('学历', fontproperties=font_zh)
 ax1.set_zlabel('平均工资（千/月）', fontproperties=font_zh)
 
 ax2 = fig.add_subplot(122)
-corr1 = reg_data['salary'].corr(reg_data['exp']) # 工资与工作经验的相关系数
-corr2 = reg_data['salary'].corr(reg_data['edu']) # 工资与学历的相关系数
+corr1 = reg_data['salary'].corr(reg_data['exp'])  # 工资与工作经验的相关系数
+corr2 = reg_data['salary'].corr(reg_data['edu'])  # 工资与学历的相关系数
 plt.title('平均工资与工作经验和学历的相关系数', fontproperties=font_zh)
 plt.text(0.05, 0.93, '平均工资与工作经验的相关系数：' + str(round(corr1, 3)),
          fontproperties=font_zh)
 plt.text(0.05, 0.86, '平均工资与学历的相关系数：' + str(round(corr2, 3)),
          fontproperties=font_zh)
-plt.xticks([]) # 设置空坐标轴
+plt.xticks([])  # 设置空坐标轴
 plt.yticks([])
 
 plt.show()
