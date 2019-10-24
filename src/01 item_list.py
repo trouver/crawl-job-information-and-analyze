@@ -21,7 +21,7 @@ page_num = int(re.search('\d+', page_num_text).group())  # 获得页码
 
 for i in range(page_num):
     res = requests.get(search_url)
-    #     res.encoding = 'gb2312' # 修改页面代码格式为 gb2312
+#     res.encoding = 'gb2312'  # 修改页面代码格式为 gb2312
     soup = BeautifulSoup(res.text, features='lxml')
 
     item_list = soup.select('.t1')  # 选出 class="t1" 下的内容
